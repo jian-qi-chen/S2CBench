@@ -4,6 +4,7 @@
 
 #ifdef C
 #include <time.h>
+#include <stdbool.h>
 #include "define.h"
 FILE* ifptr, *ofptr;
 /* inputs */
@@ -738,7 +739,8 @@ int main(){
 unsigned char bitToByte(bool* bitarray)
 {
   unsigned char ret = 0;
-  for(int i=0; i<8; ++i){
+  int i;
+  for(i=0; i<8; ++i){
     if(bitarray[i])
       ret |= 1 << (7-i);
   }
@@ -837,7 +839,7 @@ void image_write(void){
   fwrite(sos,1,10,ofptr);
 
   //write data
-  jpeg_len = int(jpeg_len_b/8)+1;
+  jpeg_len = (int)(jpeg_len_b/8)+1;
   //put 1's in remainder of the last byte
   for(p=0;p<7;p++)
     jpegFinalImage_bits[jpeg_len_b+p] = 1;
