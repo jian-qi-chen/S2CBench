@@ -18,7 +18,7 @@
   #define BYTES_PER_PIXEL 3
 
   #define COLS 1920 * BYTES_PER_PIXEL 
-  #define ROWS 1080 * BYTES_PER_PIXEL 
+  #define ROWS 1080
 
 
   #define IMAGE_IN "batmanjoker.bmp"

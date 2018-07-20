@@ -19,7 +19,7 @@ typedef unsigned char U8;
 
 #define DIFFFILENAME              "diff.txt"
 
-#define INPUT_VECTOR_NUM 10 // when EX_TIME is defined input vector number * 1000
+#define INPUT_VECTOR_NUM 10 // when EX_TIME is defined input vector number * 10000
 
 FILE * in_file, *in_file_key,  *out_golden_file, *out_file;
 FILE  *out_aes_cipher_file, *diff_file;
@@ -288,7 +288,7 @@ int main(){
     clock_t begin = clock();
 #ifdef EX_TIME
 int q;
-for(q=0;q<1000;q++){
+for(q=0;q<10000;q++){
 #endif
     // execution
     for(j=0; j<INPUT_VECTOR_NUM; j++){

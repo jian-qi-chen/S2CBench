@@ -1,13 +1,13 @@
 # Source, Executable, Includes, Library Defines
 
-INCL   = -I/eda/bin/cwb/cyber/include
+INCL   = 
 SRC    = sobel.c
 OBJ    = $(SRC:.c=.o)
 EXE=   sobel.exe
 
 # Compiler, Linker Defines
-CC = gcc
-CFLAGS= -pedantic -Wall -O3 -DC
+CC = arm-linux-gnueabihf-gcc
+CFLAGS=  -Wall -O0 -DC
 #LIBPATH = -L.
 LDFLAGS = -o $(EXE) $(LIBPATH) $(LIBS)
 CFDEBUG = -DC  -Wall -g -DDEBUG $(LDFLAGS)
