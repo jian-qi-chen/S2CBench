@@ -34,7 +34,7 @@ SC_MODULE( quicksort )
    void run() ;
 
    /* S */
-   void swap(int *, int *);
+   void swap(sc_uint<8> *, sc_uint<8> *);
    void sort(sc_uint<8> *);
 
 	

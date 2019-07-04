@@ -19,13 +19,13 @@
 
 void quicksort::run(){
 	
-    sc_uint<8>  data[SIZE];
+    sc_uint<8>  data[SIZE]/* Cyber array=EXPAND, array_index=const*/;
     int x;
 
     wait();
 
     while(1){
-
+        /* Cyber unroll_times=all */
         for(x = 0 ; x < SIZE ; x++){
             data[x] = indata[x].read();
         }
@@ -34,7 +34,7 @@ void quicksort::run(){
         // Main quick sort routine 
         sort(data);
 
-
+        /* Cyber unroll_times=all */
         for(x = 0 ;x < SIZE ;x++){
             odata[x].write(data[x]);
         }
@@ -52,7 +52,8 @@ void quicksort::sort(sc_uint<8> *arr){
 
 
     // Variables declaration
-    int  piv, beg[SIZE], end[SIZE], i=0, L, R;
+    int i=0, L, R;
+    sc_uint<8>  piv, beg[SIZE]/* Cyber array=EXPAND, array_index=const*/, end[SIZE]/* Cyber array=EXPAND, array_index=const*/;
 
     beg[0]=0;
     end[0]=SIZE;
@@ -93,7 +94,7 @@ void quicksort::sort(sc_uint<8> *arr){
 }
 
 
-void quicksort::swap(int *end, int *beg){
+void quicksort::swap(sc_uint<8> *end, sc_uint<8> *beg){
 
     int swap;
 
