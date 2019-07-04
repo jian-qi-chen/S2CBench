@@ -1,0 +1,35 @@
+#ifndef QSORT_H
+#define QSORT_H
+
+#include "define.h"
+
+
+SC_MODULE( bubblesort )
+{
+    sc_in<bool> clk;
+    sc_in<bool> rst;
+
+   sc_in<sc_uint<8> > indata[SIZE];
+   sc_out<sc_uint<8> > odata[SIZE];
+
+
+   /* R */
+   void run() ;
+
+   /* S */
+   void swap(sc_uint<8> *, sc_uint<8> *);
+   void sort(sc_uint<8> *);
+
+	
+   SC_CTOR( bubblesort)
+     {
+       SC_CTHREAD(run, clk.pos()) ;
+       reset_signal_is(rst, false) ;
+     }
+
+   ~bubblesort(){}
+
+};
+
+#endif // QOSRT_H
+
