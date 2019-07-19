@@ -3,7 +3,7 @@
 
 void bubblesort::run(){
 	
-    sc_uint<8>  data[SIZE];
+    sc_uint<8>  data[SIZE], data_out[SIZE];
     int x;
 
     wait();
@@ -11,7 +11,9 @@ void bubblesort::run(){
     while(1){
 
         for(x = 0 ; x < SIZE ; x++){
-            data[x] = indata[x].read();
+            data[x] = indata.read() ;
+            odata.write(data_out[x]);
+            wait();
         }
 
 
@@ -20,13 +22,12 @@ void bubblesort::run(){
 
 
         for(x = 0 ;x < SIZE ;x++){
-            odata[x].write(data[x]);
+            data_out[x] = data[x];
         }
 
 
-        wait() ;
+    //  wait() ;
     }
-
 
 }
 
