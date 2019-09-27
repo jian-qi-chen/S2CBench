@@ -1,0 +1,17 @@
+
+Output missmatch[line:1] Golden: 1184.6199951171875000+i816 -- Output: 1251.7399902343750000+i883
+Output missmatch[line:2] Golden: -328.5400085449218750+i-182 -- Output: -197.7100067138671875+i-206
+Output missmatch[line:3] Golden: -125.8899993896484375+i80 -- Output: -145.3999938964843750+i62
+Output missmatch[line:4] Golden: -198.0200042724609375+i-347 -- Output: 208.9299926757812500+i-228
+Output missmatch[line:5] Golden: 553.9600219726562500+i70 -- Output: -136.8899993896484375+i621
+Output missmatch[line:6] Golden: -243.7299957275390625+i-246 -- Output: 233.0200042724609375+i-95
+Output missmatch[line:7] Golden: -132.0299987792968750+i279 -- Output: -198.6999969482421875+i-290
+Output missmatch[line:8] Golden: 80.8099975585937500+i410 -- Output: -319.3699951171875000+i-384
+Output missmatch[line:9] Golden: -238.9400024414062500+i-162 -- Output: 171.8099975585937500+i95
+Output missmatch[line:10] Golden: 263.9899902343750000+i32 -- Output: -268.0899963378906250+i-218
+Output missmatch[line:11] Golden: -115.8000030517578125+i-326 -- Output: -148.3800048828125000+i217
+Output missmatch[line:12] Golden: -108.5000000000000000+i172 -- Output: 237.1100006103515625+i-53
+Output missmatch[line:13] Golden: -396.4400024414062500+i-626 -- Output: -559.3800048828125000+i329
+Output missmatch[line:14] Golden: 93.9599990844726562+i-239 -- Output: -96.9899978637695312+i-215
+Output missmatch[line:15] Golden: -293.8399963378906250+i55 -- Output: -73.7500000000000000+i247
+Output missmatch[line:16] Golden: 4.4000000953674316+i214 -- Output: 173.7899932861328125+i233

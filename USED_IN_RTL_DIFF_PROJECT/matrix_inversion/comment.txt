@@ -1,0 +1,2 @@
+inverse of matrix:
+LU decomposition (lu_decomp) vs adjoint method (adj_matrix)
