@@ -1,3 +1,19 @@
+//========================================================================================
+// 
+// File Name    : cnn.cpp
+// Description  : Convolutional neural network
+// Release Date : 10/11/2019
+// Author       : Maurice Peemen, Dongrui She 
+//                Jianqi Chen, Benjamin Carrion Schafer
+//
+// Revision History
+//---------------------------------------------------------------------------------------
+// Date        Version    Author                Description
+//---------------------------------------------------------------------------------------
+// 2013         1.0       M. Peemen, D. She     original pure C implementation          
+// 10/11/2019   1.1       Jianqi Chen           convert into synthesizable systemC
+//=======================================================================================
+
 #include "cnn.h"
 
 void cnn::cnn_main(void){
@@ -8,53 +24,58 @@ void cnn::cnn_main(void){
   static unsigned char net_layer2[16*177*317];
   static unsigned char net_layer3[80*173*313];
 
-  sc_fixed<18,12,SC_RND,SC_SAT> bias1[6]={ 
+  static sc_fixed<18,12,SC_RND,SC_SAT> bias1[6]={ 
     #include "bias1.dat"
   };  //memory for network coefficients
-  sc_fixed<12,8,SC_RND,SC_SAT> weight1[6*36]={
+  static sc_fixed<12,8,SC_RND,SC_SAT> weight1[6*36]={
     #include "weight1.dat"
   };
-  sc_fixed<18,12,SC_RND,SC_SAT> bias2[16] = {
+  static sc_fixed<18,12,SC_RND,SC_SAT> bias2[16] = {
     #include "bias2.dat"
   };
-  sc_fixed<12,8,SC_RND,SC_SAT> weight2[(6*3+9*4+6)*36] = {
+  static sc_fixed<12,8,SC_RND,SC_SAT> weight2[(6*3+9*4+6)*36] = {
     #include "weight2.dat"
   };
-  sc_fixed<18,12,SC_RND,SC_SAT> bias3[80] = {
+  static sc_fixed<18,12,SC_RND,SC_SAT> bias3[80] = {
     #include "bias3.dat"
   };
-  WEIGHT3_DATA_TYPE weight3[25*8*80] = {
+  static sc_fixed<12,8,SC_RND,SC_SAT> weight3[25*8*80] = {
     #include "weight3.dat"
   };
-  sc_fixed<18,12,SC_RND,SC_SAT> bias4[8] = {
+  static sc_fixed<18,12,SC_RND,SC_SAT> bias4[8] = {
     #include "bias4.dat"
   };
-  sc_fixed<12,8,SC_RND,SC_SAT> weight4[80*8] = {
+  static sc_fixed<12,8,SC_RND,SC_SAT> weight4[80*8] = {
     #include "weight4.dat"
   };
   
   unsigned int detectarray[3*10];
   int detections;
   
-  // read image
-  for(i=0; i<720*1280; i++){
-    in_image[i] = indata.read();
-    wait();
-  }
+  wait();
+  while(1){  
+
+    // read image
+    for(i=0; i<720*1280; i++){
+      in_image[i] = indata.read();
+      wait();
+    }
 
         
-  //perform feed forward operation through the network
-  run_convolution_layer1(in_image, net_layer1, bias1, weight1);
-  run_convolution_layer2(net_layer1, net_layer2, bias2, weight2);
-  run_convolution_layer3(net_layer2, net_layer3, bias3, weight3);
-  detections=run_convolution_layer4(net_layer3, bias4, weight4, detectarray);
+    //perform feed forward operation through the network
+    run_convolution_layer1(in_image, net_layer1, bias1, weight1);
+    run_convolution_layer2(net_layer1, net_layer2, bias2, weight2);
+    run_convolution_layer3(net_layer2, net_layer3, bias3, weight3);
+    detections=run_convolution_layer4(net_layer3, bias4, weight4, detectarray);
 
-  // write detection
-  detection_out.write( (sc_uint<8>)detections );
+    // write detection
+    detection_out.write( (sc_uint<8>)detections );
 
-  // write detectarray
-  for(i=0; i<3*10; i++){
-    outdata.write( detectarray[i] );
+    // write detectarray
+    for(i=0; i<3*10; i++){
+      outdata.write( detectarray[i] );
+      wait();
+    }
     wait();
   }
 
@@ -68,7 +89,7 @@ void cnn::cnn_main(void){
 void cnn::run_convolution_layer1(unsigned char in_layer[], unsigned char out_layer[],
                             const sc_fixed<18,12,SC_RND,SC_SAT> bias[], const sc_fixed<12,8,SC_RND,SC_SAT> weight[]) {
   int k,l,m,n,r;
-  static Y_DATA_TYPE y[6*358*638];
+  static sc_fixed<22,16,SC_RND,SC_SAT> y[6*358*638];
   
   //init values of feature maps at bias value
   for(r=0; r<6; r++){
@@ -85,7 +106,7 @@ void cnn::run_convolution_layer1(unsigned char in_layer[], unsigned char out_lay
         //multiply input window with kernel
         for(l=0; l<6; l++){
           for(k=0; k<6; k++){
-            y[r*358*638+m*638+n] += (Y_DATA_TYPE)(in_layer[(m*2+k)*1280+n*2+l] * weight[r*36+k*6+l]);
+            y[r*358*638+m*638+n] += (sc_fixed<22,16,SC_RND,SC_SAT>)(in_layer[(m*2+k)*1280+n*2+l] * weight[r*36+k*6+l]);
           }
         }
       }
@@ -106,7 +127,7 @@ void cnn::run_convolution_layer1(unsigned char in_layer[], unsigned char out_lay
 void cnn::run_convolution_layer2(unsigned char in_layer[], unsigned char out_layer[],
                             const sc_fixed<18,12,SC_RND,SC_SAT> bias[], const sc_fixed<12,8,SC_RND,SC_SAT> weight[]) {
   int k,l,m,n,q,r,qindex;
-  static Y_DATA_TYPE y[16*177*317];
+  static sc_fixed<22,16,SC_RND,SC_SAT> y[16*177*317];
   //feature maps are sparse connected therefore connection scheme is used
   const int qq[60]={0,1,2, 1,2,3, 2,3,4, 3,4,5, 0,4,5, 0,1,5,
                     0,1,2,3, 1,2,3,4, 2,3,4,5, 0,3,4,5, 0,1,4,5, 0,1,2,5,
@@ -129,7 +150,7 @@ void cnn::run_convolution_layer2(unsigned char in_layer[], unsigned char out_lay
           //multiply input window with kernel
           for(k=0; k<6; k++){
             for(l=0; l<6; l++){
-              y[r*177*317+m*317+n] += (Y_DATA_TYPE)(in_layer[qindex*358*638+(m*2+k)*638+n*2+l]
+              y[r*177*317+m*317+n] += (sc_fixed<22,16,SC_RND,SC_SAT>)(in_layer[qindex*358*638+(m*2+k)*638+n*2+l]
                 * weight[(r*3+q)*36+k*6+l]);
             }
           }
@@ -149,7 +170,7 @@ void cnn::run_convolution_layer2(unsigned char in_layer[], unsigned char out_lay
           for(k=0; k<6; k++){
             for(l=0; l<6; l++){
               y[(r+6)*177*317+m*317+n]
-                += (Y_DATA_TYPE)(in_layer[qindex*358*638+(m*2+k)*638+n*2+l]
+                += (sc_fixed<22,16,SC_RND,SC_SAT>)(in_layer[qindex*358*638+(m*2+k)*638+n*2+l]
                 * weight[(r*4+q+18)*36+k*6+l]);
             }
           }
@@ -169,7 +190,7 @@ void cnn::run_convolution_layer2(unsigned char in_layer[], unsigned char out_lay
         for(k=0; k<6; k++){
           for(l=0; l<6; l++){
             y[15*177*317+m*317+n]
-              += (Y_DATA_TYPE)(in_layer[qindex*358*638+(m*2+k)*638+n*2+l]
+              += (sc_fixed<22,16,SC_RND,SC_SAT>)(in_layer[qindex*358*638+(m*2+k)*638+n*2+l]
               * weight[(54+q)*36+k*6+l]);
           }
         }
@@ -188,9 +209,9 @@ void cnn::run_convolution_layer2(unsigned char in_layer[], unsigned char out_lay
  * Procedure: perform feed forward computation through the neural network
  ************************************************************************************/
 void cnn::run_convolution_layer3(unsigned char in_layer[], unsigned char out_layer[],
-                            const sc_fixed<18,12,SC_RND,SC_SAT> bias[], const WEIGHT3_DATA_TYPE weight[]) {
+                            const sc_fixed<18,12,SC_RND,SC_SAT> bias[], const sc_fixed<12,8,SC_RND,SC_SAT> weight[]) {
   int k,l,m,n,q,r;
-  static Y_DATA_TYPE y[80*173*313];
+  static sc_fixed<22,16,SC_RND,SC_SAT> y[80*173*313];
 
   //init values of feature maps at bias value
   for(r=0; r<80; r++){
@@ -208,7 +229,7 @@ void cnn::run_convolution_layer3(unsigned char in_layer[], unsigned char out_lay
           for(l=0; l<5; l++){//only 5x5 convolution
             for(k=0; k<5; k++){//there is no subsampling in this layer    
               y[r*173*313+m*313+n]
-                += (Y_DATA_TYPE)(in_layer[q*177*317+(m+k)*317+n+l] * weight[(r*8+q)*25+k*5+l]);
+                += (sc_fixed<22,16,SC_RND,SC_SAT>)(in_layer[q*177*317+(m+k)*317+n+l] * weight[(r*8+q)*25+k*5+l]);
             }
           }
         }
@@ -224,7 +245,7 @@ void cnn::run_convolution_layer3(unsigned char in_layer[], unsigned char out_lay
           //multiply input window with kernel
           for(l=0; l<5; l++){//only 5x5 convolution 
             for(k=0; k<5; k++){     
-              y[r*173*313+m*313+n] += (Y_DATA_TYPE)(in_layer[q*177*317+(m+k)*317+n+l]
+              y[r*173*313+m*313+n] += (sc_fixed<22,16,SC_RND,SC_SAT>)(in_layer[q*177*317+(m+k)*317+n+l]
                 * weight[(r*8+q-8)*25+k*5+l]);
             }
           }
@@ -249,10 +270,10 @@ int cnn::run_convolution_layer4(unsigned char in_layer[], const sc_fixed<18,12,S
   int m,n,q,r;
   int detections=0;
   int posx, posy;
-  Y_DATA_TYPE y;
+  sc_fixed<22,16,SC_RND,SC_SAT> y;
   int set=0;
 
-  Y_DATA_TYPE max;
+  sc_fixed<22,16,SC_RND,SC_SAT> max;
 
   //convolve weight kernel with input image
   for(m=0; m<173; m++){//shift input window over image
@@ -260,7 +281,7 @@ int cnn::run_convolution_layer4(unsigned char in_layer[], const sc_fixed<18,12,S
       //init values of feature map at bias value
       y = bias[0];
       for(q=0; q<80; q++){
-        y += (Y_DATA_TYPE)(in_layer[q*173*313+m*313+n] * weight[q]);
+        y += (sc_fixed<22,16,SC_RND,SC_SAT>)(in_layer[q*173*313+m*313+n] * weight[q]);
       }
       // no sigmoid required sigmoid threshold 0.6 => potential should be
       // inverse -ln(0.6^-1 -1)= 0.405 x 256 = 103.799
@@ -270,7 +291,7 @@ int cnn::run_convolution_layer4(unsigned char in_layer[], const sc_fixed<18,12,S
         for(r=1; r<8; r++){// check other 7 maps for the stronges sign
           y = bias[r];
           for(q=0; q<80; q++){
-            y += (Y_DATA_TYPE)(in_layer[q*173*313+m*313+n] * weight[r*80+q]);
+            y += (sc_fixed<22,16,SC_RND,SC_SAT>)(in_layer[q*173*313+m*313+n] * weight[r*80+q]);
           }
           //if (y>=103.799f && y>max){
 		  if (y>=0.0 && y>max){
@@ -295,10 +316,10 @@ int cnn::run_convolution_layer4(unsigned char in_layer[], const sc_fixed<18,12,S
 }
 
 // sigmoid function
-Y_DATA_TYPE cnn::activation_function( Y_DATA_TYPE sum){
+sc_fixed<22,16,SC_RND,SC_SAT> cnn::activation_function( sc_fixed<22,16,SC_RND,SC_SAT> sum){
     int i;
-    Y_DATA_TYPE ret_v, sum_n;
-    E_DATA_TYPE sum_e;
+    sc_fixed<22,16,SC_RND,SC_SAT> ret_v, sum_n;
+    sc_fixed<24,8,SC_RND,SC_SAT> sum_e;
     sum_e=1;
     sum_n = -sum/256;
     // calculate exp with Taylor series

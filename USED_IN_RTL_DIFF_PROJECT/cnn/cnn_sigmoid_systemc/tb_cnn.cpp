@@ -1,3 +1,19 @@
+//========================================================================================
+// 
+// File Name    : main.cpp
+// Description  : Convolutional neural network testbench
+// Release Date : 10/11/2019
+// Author       : Maurice Peemen, Dongrui She 
+//                Jianqi Chen, Benjamin Carrion Schafer
+//
+// Revision History
+//---------------------------------------------------------------------------------------
+// Date        Version    Author                Description
+//---------------------------------------------------------------------------------------
+// 2013         1.0       M. Peemen, D. She     original pure C implementation          
+// 10/11/2019   1.1       Jianqi Chen           convert into synthesizable systemC
+//=======================================================================================
+
 #include "tb_cnn.h"
 #include <time.h>
 
@@ -11,6 +27,7 @@ void tb_cnn::send(void){
   strcpy(imagename, "test000046.pgm");
   read_image_pgm(in_image, imagename, 1280, 720);
   
+  wait();
   for( i=0; i<720*1280; i++){
     indata.write( (sc_uint<8>)in_image[i] );
     wait();
@@ -29,6 +46,7 @@ void tb_cnn::recv(void){
   unsigned int detectarray[3*10];
   int detections;
   
+  wait();
   for(i=0; i<720*1280; i++){ // wait for sending data
     wait();
   }

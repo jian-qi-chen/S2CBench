@@ -36,26 +36,31 @@ void cnn::cnn_main(void){
   unsigned int detectarray[3*10];
   int detections;
   
-  // read image
-  for(i=0; i<720*1280; i++){
-    in_image[i] = indata.read();
-    wait();
-  }
+  wait();
+  while(1){
+  
+    // read image
+    for(i=0; i<720*1280; i++){
+      in_image[i] = indata.read();
+      wait();
+    }
 
-        
-  //perform feed forward operation through the network
-  run_convolution_layer1(in_image, net_layer1, bias1, weight1);
-  run_convolution_layer2(net_layer1, net_layer2, bias2, weight2);
-  run_convolution_layer3(net_layer2, net_layer3, bias3, weight3);
-  detections=run_convolution_layer4(net_layer3, bias4, weight4, detectarray);
+    
+    //perform feed forward operation through the network
+    run_convolution_layer1(in_image, net_layer1, bias1, weight1);
+    run_convolution_layer2(net_layer1, net_layer2, bias2, weight2);
+    run_convolution_layer3(net_layer2, net_layer3, bias3, weight3);
+    detections=run_convolution_layer4(net_layer3, bias4, weight4, detectarray);
 
-  // write detection
-  detection_out.write( (sc_uint<8>)detections );
+    // write detection
+    detection_out.write( (sc_uint<8>)detections );
 
-  // write detectarray
-  for(i=0; i<3*10; i++){
-    outdata.write( detectarray[i] );
-    wait();
+    // write detectarray
+    for(i=0; i<3*10; i++){
+      outdata.write( detectarray[i] );
+      wait();
+    }
+  
   }
 
 }

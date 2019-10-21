@@ -1,3 +1,19 @@
+//========================================================================================
+// 
+// File Name    : main.cpp
+// Description  : CNN top design implementation
+// Release Date : 10/11/2019
+// Author       : Maurice Peemen, Dongrui She 
+//                Jianqi Chen, Benjamin Carrion Schafer
+//
+// Revision History
+//---------------------------------------------------------------------------------------
+// Date        Version    Author                Description
+//---------------------------------------------------------------------------------------
+// 2013         1.0       M. Peemen, D. She     original pure C implementation          
+// 10/11/2019   1.1       Jianqi Chen           convert into synthesizable systemC
+//=======================================================================================
+
 #include "cnn.h"
 #include "tb_cnn.h"
 

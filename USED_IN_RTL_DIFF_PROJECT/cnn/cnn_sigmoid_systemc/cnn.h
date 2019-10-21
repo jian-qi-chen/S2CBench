@@ -1,11 +1,23 @@
+//========================================================================================
+// 
+// File Name    : main.cpp
+// Description  : Convolutional neural network header
+// Release Date : 10/11/2019
+// Author       : Maurice Peemen, Dongrui She 
+//                Jianqi Chen, Benjamin Carrion Schafer
+//
+// Revision History
+//---------------------------------------------------------------------------------------
+// Date        Version    Author                Description
+//---------------------------------------------------------------------------------------
+// 2013         1.0       M. Peemen, D. She     original pure C implementation          
+// 10/11/2019   1.1       Jianqi Chen           convert into synthesizable systemC
+//=======================================================================================
+
 #ifndef CNN_H_
 #define CNN_H_
 #define SC_INCLUDE_FX
 #include "systemc.h"
-
-# define WEIGHT3_DATA_TYPE float//sc_fixed<12,8,SC_RND,SC_SAT>
-# define Y_DATA_TYPE sc_fixed<22,16,SC_RND,SC_SAT>
-# define E_DATA_TYPE sc_fixed<24,8,SC_RND,SC_SAT>
 
 SC_MODULE (cnn) {
     public:
@@ -23,10 +35,10 @@ SC_MODULE (cnn) {
     void run_convolution_layer2(unsigned char in_layer[], unsigned char out_layer[],
                             const sc_fixed<18,12,SC_RND,SC_SAT> bias[], const sc_fixed<12,8,SC_RND,SC_SAT> weight[]);
     void run_convolution_layer3(unsigned char in_layer[], unsigned char out_layer[],
-                            const sc_fixed<18,12,SC_RND,SC_SAT> bias[], const WEIGHT3_DATA_TYPE weight[]);
+                            const sc_fixed<18,12,SC_RND,SC_SAT> bias[], const sc_fixed<12,8,SC_RND,SC_SAT> weight[]);
     int run_convolution_layer4(unsigned char in_layer[], const sc_fixed<18,12,SC_RND,SC_SAT> bias[],
                             const sc_fixed<12,8,SC_RND,SC_SAT> weight[], unsigned int detect[]);
-    Y_DATA_TYPE activation_function( Y_DATA_TYPE sum);
+    sc_fixed<22,16,SC_RND,SC_SAT> activation_function( sc_fixed<22,16,SC_RND,SC_SAT> sum);
 
     SC_CTOR (cnn) {
         SC_CTHREAD (cnn_main, clk.pos() );

@@ -11,6 +11,7 @@ void tb_cnn::send(void){
   strcpy(imagename, "test000046.pgm");
   read_image_pgm(in_image, imagename, 1280, 720);
   
+  wait();
   for( i=0; i<720*1280; i++){
     indata.write( (sc_uint<8>)in_image[i] );
     wait();
@@ -29,6 +30,7 @@ void tb_cnn::recv(void){
   unsigned int detectarray[3*10];
   int detections;
   
+  wait();
   for(i=0; i<720*1280; i++){ // wait for sending data
     wait();
   }
