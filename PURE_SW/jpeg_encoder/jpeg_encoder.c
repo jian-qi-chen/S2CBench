@@ -181,17 +181,17 @@ void jpeg_dct()
         else dct_output[u][v] = (0.25*a);
       }
 #else
-          a+= (line_buffer[x][y])*(dct_co[x][u]*dct_co[y][v]);
+          a+= (dct_co[x][u]*dct_co[y][v]) * line_buffer[x][y];
 
       if(u==0){
-        if(v==0) dct_output[u][v] = a/8 - 1024*16*16;
-        else dct_output[u][v] = 10*a/57;
+        if(v==0) dct_output[u][v] = (a>>3) - 1024*64*64;
+        else dct_output[u][v] = (45*a)>>8;
       }
       else {
-        if(v==0) dct_output[u][v] = 10*a/57;
-        else dct_output[u][v] = a/4;
+        if(v==0) dct_output[u][v] = (45*a)>>8;
+        else dct_output[u][v] = a>>2;
       }
-      dct_output[u][v] >>= 8;
+      dct_output[u][v] >>= 12;
 #endif
     }
 }
