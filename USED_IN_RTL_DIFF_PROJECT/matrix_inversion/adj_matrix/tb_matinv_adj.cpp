@@ -1,19 +1,5 @@
 #include "tb_matinv_adj.h"
 
-// Generic function to display the matrix. We use it to display 
-// both adjoin and inverse. adjoin is integer matrix and inverse 
-// is a float. 
-template<class T> 
-void display(T A[4][4]) 
-{ 
-	for (int i=0; i<4; i++) 
-	{ 
-		for (int j=0; j<4; j++) 
-			cout << A[i][j] << " "; 
-		cout << endl; 
-	} 
-}
-
 void tb_matinv_adj::send(){
     int i,j;
     float in_read;
